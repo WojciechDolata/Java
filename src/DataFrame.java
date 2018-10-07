@@ -38,6 +38,7 @@ public class DataFrame {
             table.add(new Column(columnaName,""));
         }
     }
+
     public int size(){
         return table.get(0).obj.size();
         //return iterator;
@@ -68,28 +69,36 @@ public class DataFrame {
         return toBeReturned;
     }
 
-    public String getColNames(){
-        String returnable = "";
-        for(Column currentCol : table) {
-            returnable += currentCol.name +", ";
-        }
-        return returnable.replace(returnable.substring(returnable.length()-2), "");
+    public int getColNum(){
+        int i=0;
+        for(Column currentCol : this.table)
+            i++;
+        return i;
     }
 
+    //dziala
+    public String[] getColNames(){
+        String[] returnable = new String[getColNum()];
+        int i=0;
+        for(Column currentCol : this.table) {
+            returnable[i] = currentCol.name;
+            i++;
+        }
+        return returnable;
+    }
+
+    //dziala
     public DataFrame iloc(int i){
-        String[] colNames = { getColNames()};
-        DataFrame returnable = new DataFrame(colNames,colNames);
+        DataFrame returnable = new DataFrame(getColNames(),getColNames());
         returnable.add(getItem(i));
         return returnable;
     }
 
+    //dziala
     public DataFrame iloc(int from, int to){
-        String[] colNames = { getColNames()};
-        DataFrame returnable = new DataFrame(colNames,colNames);
-        for(String ss : colNames) System.out.println(ss);
+        DataFrame returnable = new DataFrame(getColNames(),getColNames());
+
         for(int i = from; i <= to; i++){
-            System.out.println(getItem(i));
-            System.out.println(returnable.size());
             returnable.add(getItem(i));
         }
         return returnable;
