@@ -62,7 +62,7 @@ public class Main {
         ArrayList<Object> arraylist = new ArrayList<Object>();
         ArrayList<Column> arraylist2 = new ArrayList<Column>();
         arraylist.add(233);
-        arraylist.add("Rahul");
+        arraylist.add("kutas");
         rama.add(arraylist);
         arraylist2 = rama.get( p,false );
         System.out.println(arraylist2.get(0).name);

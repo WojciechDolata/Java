@@ -34,14 +34,15 @@ public class DataFrame {
 //            i++;
 //        }
 //        i=0;
+        int ite=0;
         for(String columnaName : kolumny) {
-            table.add(new Column(columnaName,""));
+            table.add(new Column(columnaName,typy[ite]));
+            ite++;
         }
     }
 
     public int size(){
         return table.get(0).obj.size();
-        //return iterator;
     }
 
     public Column get(String colname) {
@@ -116,11 +117,15 @@ public class DataFrame {
     //add działa
     public void add(ArrayList<Object> item){
         int k = 0;
+
         for(Object currentField : item) {
+            System.out.println(item.get(k).getClass().getName() + "   " + sledzParser(this.table.get(k).type));
+            if (!item.get(k).getClass().getName().equals(sledzParser(this.table.get(k).type))) {
+                throw new ArithmeticException("Wrong data type");
+            }
             this.table.get(k).obj.add(currentField);
             k++;
         }
-        //iterator++;
     }
 
     public static String sledzParser(String a) {

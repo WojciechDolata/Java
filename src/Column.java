@@ -5,11 +5,12 @@ import java.util.concurrent.Callable;
 public class Column {
 
     public String name;
+    public String type;
 
     public ArrayList<Object> obj;
 
     public Column clone() {
-        Column returnable = new Column(name, "notimportant");
+        Column returnable = new Column(name, type);
         for(Object a : obj) {
             returnable.obj.add(a);
         }
@@ -18,6 +19,7 @@ public class Column {
 
     public Column(String nameToBe, String dataType) {
         this.name = nameToBe;
+        this.type = dataType;
         obj = new ArrayList<Object>();
     }
 }
