@@ -7,6 +7,10 @@ public class DataFrame {
 
     private int iterator = 0;
 
+    public DataFrame(){
+
+    }
+
     public DataFrame(String[] kolumny, String[] typy){
 //        for(String className : typy) {
 //            className = DataFrame.sledzParser(className);
@@ -119,13 +123,17 @@ public class DataFrame {
         int k = 0;
 
         for(Object currentField : item) {
-            System.out.println(item.get(k).getClass().getName() + "   " + sledzParser(this.table.get(k).type));
             if (!item.get(k).getClass().getName().equals(sledzParser(this.table.get(k).type))) {
                 throw new ArithmeticException("Wrong data type");
             }
             this.table.get(k).obj.add(currentField);
             k++;
         }
+    }
+    //tu można zrobić zliczanie jaki jest najpopularniejszy item zeby go eliminowac do sparsa
+    public Object mostCommon(){
+        //for(Column.ob)
+        return null;
     }
 
     public static String sledzParser(String a) {

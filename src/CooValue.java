@@ -2,10 +2,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class CooValue{
-    public int id = null;
-    public int val = null;
+    public final int id;
+    public final Object val;
 
-    public CooValue(int idToBe, int valToBe) {
+    public CooValue(int idToBe, Object valToBe) {
         id = idToBe;
         val = valToBe;
     }

@@ -58,17 +58,16 @@ public class Main {
     public static void main (String[] args) {
         String [] p = {"aaa" , "bbb" };
         String [] d = {"int", "int"};
-        DataFrame rama = new DataFrame(p,d );
-        ArrayList<Object> arraylist = new ArrayList<Object>();
-        ArrayList<Column> arraylist2 = new ArrayList<Column>();
-        arraylist.add(233);
-        arraylist.add("kutas");
-        rama.add(arraylist);
-        arraylist2 = rama.get( p,false );
-        System.out.println(arraylist2.get(0).name);
-        rama.table.get(0).name= "jajka";
+        SparseDataFrame nowaRama = new SparseDataFrame(p,d,"0");
 
-        System.out.println(arraylist2.get(0).name);
-
+        ArrayList<Object> nowyObj = new ArrayList<>();
+        ArrayList<Object> nowyObj2 = new ArrayList<>();
+        nowyObj.add(0,0);
+        nowyObj.add(1,1);
+        nowaRama.add(nowyObj);
+        nowyObj2.add(0,2137);
+        nowyObj2.add(1,200);
+        nowaRama.add(nowyObj2);
+        nowaRama.print();
     }
 }
