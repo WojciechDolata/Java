@@ -1,5 +1,7 @@
+import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Scanner;
 
 public class DataFrame {
 
@@ -43,6 +45,43 @@ public class DataFrame {
             table.add(new Column(columnaName,typy[ite]));
             ite++;
         }
+    }
+
+    public DataFrame(String fileName, String[] typy, boolean header) throws IOException {
+        FileInputStream fstream = new FileInputStream(fileName);
+        BufferedReader br = new BufferedReader(new InputStreamReader(fstream));
+
+        String strLine;
+        String[] names;
+        if(header) {
+            strLine = br.readLine();
+            names = strLine.split("[,]");
+        }
+        else {
+            Scanner scanner = new Scanner(System.in);
+            System.out.println("Prosze mi podac te nazwy (po przecinku)");
+            strLine = scanner.nextLine();
+            names = strLine.split("[,]");
+        }
+        int noColumns=0;
+        for(String columnaName : names) {
+            table.add(new Column(columnaName,typy[noColumns]));
+            noColumns++;
+        }
+
+        //Read File Line By Line
+        while ((strLine = br.readLine()) != null)   {
+            strLine = br.readLine();
+            String[] currentItem = strLine.split("[,]");
+            ArrayList<Object> tmpItem = new ArrayList<>();
+            // trzeba wyifowac typy i dodawac przedmioty do kolumn
+
+            // Print the content on the console
+            //table.add()
+        }
+
+        //Close the input stream
+        br.close();
     }
 
     public int size(){

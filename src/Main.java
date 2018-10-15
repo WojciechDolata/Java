@@ -1,6 +1,5 @@
-import javax.xml.crypto.Data;
+import java.io.*;
 import java.util.ArrayList;
-import java.util.List;
 
 public class Main {
 
@@ -55,9 +54,10 @@ public class Main {
         return a;
     }
 
-    public static void main (String[] args) {
+    public static void main (String[] args) throws IOException {
         String [] p = {"aaa" , "bbb" };
         String [] d = {"int", "int"};
+        String [] typy = {"double", "double","double"};
         SparseDataFrame nowaRama = new SparseDataFrame(p,d,"0");
 
         ArrayList<Object> nowyObj = new ArrayList<>();
@@ -88,5 +88,23 @@ public class Main {
         DataFrame jeszcze1 = nowaRama.toDense();
         SparseDataFrame tmpRama2 = new SparseDataFrame(jeszcze1);
         tmpRama2.print();
+
+//        // Open the file
+//        FileInputStream fstream = new FileInputStream("./data.csv");
+//        BufferedReader br = new BufferedReader(new InputStreamReader(fstream));
+//
+//        String strLine;
+//
+//        //Read File Line By Line
+//        while ((strLine = br.readLine()) != null)   {
+//            // Print the content on the console
+//            System.out.println (strLine);
+//        }
+//
+//        //Close the input stream
+//        br.close();
+
+        DataFrame rrrrr = new DataFrame ("./data.csv",typy, true);
+
     }
 }
