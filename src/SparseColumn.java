@@ -9,14 +9,6 @@ public class SparseColumn {
     public Object toHide;
     public ArrayList<CooValue> obj;
 
-//    public Column clone() {
-//        Column returnable = new Column(name, type);
-//        for(Object a : obj) {
-//            returnable.obj.add(a);
-//        }
-//        return returnable;
-//    }
-
     public Object copyItemId(int id){
         for(CooValue currentVal : obj){
             if(currentVal.id == id)

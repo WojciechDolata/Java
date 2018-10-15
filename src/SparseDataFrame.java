@@ -19,7 +19,7 @@ public class SparseDataFrame extends DataFrame{
     private int objectIterator = 0;
     public ArrayList<SparseColumn> table = new ArrayList<>();
     private Object elementToHide = new Object();
-    private int iterator = 0;
+
     public SparseDataFrame(String[] columns, String[] dataTypes, String hide) {
         elementToHide = hide;
         if(hide.contains(".")) {
@@ -32,14 +32,15 @@ public class SparseDataFrame extends DataFrame{
             elementToHide = hide;
         }
         for(int i=0; i<columns.length; i++) {
-            table.add(new SparseColumn(columns[i], dataTypes[i], hide));
+            table.add(new SparseColumn(columns[i], dataTypes[i], elementToHide));
         }
 
     }
     public void add(ArrayList<Object> item){
         int k=0;
         for(Object currentObj : item) {
-            if(currentObj != elementToHide) {
+            System.out.println(currentObj + " " +elementToHide);
+            if(currentObj!=elementToHide) {
                 table.get(k).obj.add(new CooValue(objectIterator, currentObj));
             }
             k++;
@@ -61,8 +62,8 @@ public class SparseDataFrame extends DataFrame{
         for(Column currentCol : unconvertedFrame.table){
             numCol++;
         }
-        String[] columns = new String[numCol + 1];
-        String[] dataTypes = new String[numCol + 1];
+        String[] columns = new String[numCol];
+        String[] dataTypes = new String[numCol];
         int k=0;
         for(Column currentCol : unconvertedFrame.table){
             columns[k] = currentCol.name;
@@ -70,7 +71,7 @@ public class SparseDataFrame extends DataFrame{
             k++;
         }
         k=0;
-        String hide = ""; // to mozna brac z mostCommon z dataFrame
+        String hide = "0"; // to mozna brac z mostCommon z dataFrame
         elementToHide = hide;
         if(hide.contains(".")) {
             elementToHide = Double.parseDouble(hide);
@@ -86,8 +87,7 @@ public class SparseDataFrame extends DataFrame{
         }
 
         for(int i=0; i<unconvertedFrame.size(); i++){
-            this.add(getItem(i));
-            iterator++;
+            this.add(unconvertedFrame.getItem(i));
         }
     }
 
@@ -101,8 +101,11 @@ public class SparseDataFrame extends DataFrame{
     }
 
     public DataFrame toDense(){
-        String[] columns = new String[iterator + 1];
-        String[] dataTypes = new String[iterator + 1];
+        int i=0;
+        for(SparseColumn currentCol : this.table)
+            i++;
+        String[] columns = new String[i];
+        String[] dataTypes = new String[i];
         int k=0;
         for(SparseColumn currentCol : this.table) {
             columns[k] = currentCol.name;
@@ -110,10 +113,9 @@ public class SparseDataFrame extends DataFrame{
             k++;
         }
         DataFrame returnable = new DataFrame(columns,dataTypes);
-        for(int i = 0; i<objectIterator; i++) {
+        for(i = 0; i<objectIterator; i++) {
             returnable.add(this.getItem(i));
         }
-
 
         return returnable;
     }
