@@ -16,6 +16,7 @@ public class SparseDataFrame extends DataFrame{
         }
         return true;
     }
+    private int objectIterator = 0;
     public ArrayList<SparseColumn> table = new ArrayList<>();
     private Object elementToHide = new Object();
     private int iterator = 0;
@@ -39,11 +40,11 @@ public class SparseDataFrame extends DataFrame{
         int k=0;
         for(Object currentObj : item) {
             if(currentObj != elementToHide) {
-                table.get(k).obj.add(new CooValue(iterator, currentObj));
+                table.get(k).obj.add(new CooValue(objectIterator, currentObj));
             }
             k++;
         }
-        iterator++;
+        objectIterator++;
     }
 
     public void print(){
@@ -109,6 +110,9 @@ public class SparseDataFrame extends DataFrame{
             k++;
         }
         DataFrame returnable = new DataFrame(columns,dataTypes);
+        for(int i = 0; i<objectIterator; i++) {
+            returnable.add(this.getItem(i));
+        }
 
 
         return returnable;
