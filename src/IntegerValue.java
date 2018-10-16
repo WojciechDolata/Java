@@ -35,6 +35,9 @@ public class IntegerValue extends Value{
         return false;
     }
 
+    public int hashCode(){
+        return this.val.hashCode();
+    }
     
 
 
