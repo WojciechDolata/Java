@@ -63,24 +63,44 @@ public class DataFrame {
             strLine = scanner.nextLine();
             names = strLine.split("[,]");
         }
+
         int noColumns=0;
         for(String columnaName : names) {
             table.add(new Column(columnaName,typy[noColumns]));
             noColumns++;
         }
 
-        //Read File Line By Line
         while ((strLine = br.readLine()) != null)   {
             strLine = br.readLine();
             String[] currentItem = strLine.split("[,]");
             ArrayList<Object> tmpItem = new ArrayList<>();
-            // trzeba wyifowac typy i dodawac przedmioty do kolumn
-
-            // Print the content on the console
-            //table.add()
+            int i=0;
+            for (String currentType : typy){
+                switch (currentType){
+                    case "double":
+                        tmpItem.add(Double.parseDouble(currentItem[i]));
+                        break;
+                    case "Double":
+                        tmpItem.add(Double.parseDouble(currentItem[i]));
+                        break;
+                    case "Integer":
+                        tmpItem.add(Integer.parseInt(currentItem[i]));
+                        break;
+                    case "int":
+                        tmpItem.add(Integer.parseInt(currentItem[i]));
+                        break;
+                    case "String":
+                        tmpItem.add(currentItem[i]);
+                        break;
+                    case "string":
+                        tmpItem.add(currentItem[i]);
+                        break;
+                }
+                i++;
+            }
+            this.add(tmpItem);
         }
 
-        //Close the input stream
         br.close();
     }
 
@@ -148,6 +168,12 @@ public class DataFrame {
         return returnable;
     }
 
+    public void print(){
+        System.out.println(getColNames());
+        for(int i=0; i<size(); i++){
+            System.out.println(getItem(i));
+        }
+    }
 
     //getItem działa
     public ArrayList<Object> getItem (int index){

@@ -105,6 +105,7 @@ public class Main {
 //        br.close();
 
         DataFrame rrrrr = new DataFrame ("./data.csv",typy, true);
+        rrrrr.print();
 
     }
 }
