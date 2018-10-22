@@ -13,41 +13,16 @@ public class DataFrame {
 
     }
 
-    public DataFrame(String[] kolumny, String[] typy){
-//        for(String className : typy) {
-//            className = DataFrame.sledzParser(className);
-//        Class<?> typ;
-//        try {
-//            typ = Class.forName(className);
-//            Class typ1 = typ.getClass();
-//            List<typ1> kol = new ArrayList<>();
-//        } catch(Exception e) {
-//            System.out.println(e);
-//        }
-//
-//            Class cls = Class.forName(className);
-//            Integer num = 4;
-//
-//            Class cls = className.getClass();
-//            Object a = new cls();
-//            Object obj = (Object) cls.newInstance();
-//            List<cls> kol = new ArrayList<>();
-//        }
-//        int i = 0;
-//        Column[] tabCol = new Column[100];
-//        for(String columnaName : kolumny) {
-//            tabCol[i] = new Column(columnaName, "");
-//            i++;
-//        }
-//        i=0;
+    public DataFrame(String[] kolumny, ArrayList<Class<? extends Value>> typy){
+
         int ite=0;
         for(String columnaName : kolumny) {
-            table.add(new Column(columnaName,typy[ite]));
+            table.add(new Column(columnaName,typy.get(ite)));
             ite++;
         }
     }
 
-    public DataFrame(String fileName, String[] typy, boolean header) throws IOException {
+    public DataFrame(String fileName, ArrayList<Class<? extends Value>> typy, boolean header) throws IOException {
         FileInputStream fstream = new FileInputStream(fileName);
         BufferedReader br = new BufferedReader(new InputStreamReader(fstream));
 
@@ -66,39 +41,43 @@ public class DataFrame {
 
         int noColumns=0;
         for(String columnaName : names) {
-            table.add(new Column(columnaName,typy[noColumns]));
+            table.add(new Column(columnaName,typy.get(noColumns)));
             noColumns++;
         }
 
         while ((strLine = br.readLine()) != null)   {
             strLine = br.readLine();
             String[] currentItem = strLine.split("[,]");
-            ArrayList<Object> tmpItem = new ArrayList<>();
-            int i=0;
-            for (String currentType : typy){
-                switch (currentType){
-                    case "double":
-                        tmpItem.add(Double.parseDouble(currentItem[i]));
-                        break;
-                    case "Double":
-                        tmpItem.add(Double.parseDouble(currentItem[i]));
-                        break;
-                    case "Integer":
-                        tmpItem.add(Integer.parseInt(currentItem[i]));
-                        break;
-                    case "int":
-                        tmpItem.add(Integer.parseInt(currentItem[i]));
-                        break;
-                    case "String":
-                        tmpItem.add(currentItem[i]);
-                        break;
-                    case "string":
-                        tmpItem.add(currentItem[i]);
-                        break;
-                }
-                i++;
+            for(int j = 0; j<currentItem.length; j++) {
+                table.get(j).obj.add(Value.getInstance(table.get(j).type));
             }
-            this.add(tmpItem);
+//            ArrayList<Value> tmpItem = new ArrayList<>();
+//            int i=0;
+//            for (Class<? extends Value> currentType : typy){
+//                //tmpItem.add(create());
+////                switch (currentType){
+////                    case "double":
+////                        tmpItem.add(Double.parseDouble(currentItem[i]));
+////                        break;
+////                    case "Double":
+////                        tmpItem.add(Double.parseDouble(currentItem[i]));
+////                        break;
+////                    case "Integer":
+////                        tmpItem.add(Integer.parseInt(currentItem[i]));
+////                        break;
+////                    case "int":
+////                        tmpItem.add(Integer.parseInt(currentItem[i]));
+////                        break;
+////                    case "String":
+////                        tmpItem.add(currentItem[i]);
+////                        break;
+////                    case "string":
+////                        tmpItem.add(currentItem[i]);
+////                        break;
+////                }
+//                i++;
+//            }
+//            this.add(tmpItem);
         }
 
         br.close();
@@ -116,7 +95,7 @@ public class DataFrame {
         return null;
     }
 
-    public ArrayList<Column> get(String [] cols, boolean copy) {
+    public ArrayList<Column> get(String [] cols, boolean copy) throws CloneNotSupportedException {
         ArrayList<Column> toBeReturned = new ArrayList<Column>();
         for(String currentColName : cols) {
             for(Column currentCol : table) {
@@ -147,50 +126,50 @@ public class DataFrame {
         for(Column currentCol : this.table) {
             returnable[i] = currentCol.name;
             i++;
+            System.out.println(currentCol.name);
         }
         return returnable;
     }
 
     //dziala
-    public DataFrame iloc(int i){
-        DataFrame returnable = new DataFrame(getColNames(),getColNames());
-        returnable.add(getItem(i));
+    public DataFrame iloc(int i){//trzeba by cos dopisac do ilocow obu
+        DataFrame returnable = new DataFrame();
+        //returnable.add(getItem(i));
         return returnable;
     }
 
     //dziala
     public DataFrame iloc(int from, int to){
-        DataFrame returnable = new DataFrame(getColNames(),getColNames());
+        DataFrame returnable = new DataFrame();
 
         for(int i = from; i <= to; i++){
-            returnable.add(getItem(i));
+            //returnable.add(getItem(i));
         }
         return returnable;
     }
 
     public void print(){
-        System.out.println(getColNames());
+        for(String currentName: getColNames()){
+            System.out.println(currentName);
+        }
         for(int i=0; i<size(); i++){
             System.out.println(getItem(i));
         }
     }
 
     //getItem działa
-    public ArrayList<Object> getItem (int index){
-        ArrayList<Object> returnable = new ArrayList<>();
+    public ArrayList<Value> getItem (int index){
+        ArrayList<Value> returnable = new ArrayList<>();
         for(Column currentCol : table) {
             returnable.add(currentCol.obj.get(index));
         }
         return returnable;
     }
     //add działa
-    public void add(ArrayList<Object> item){
+    public void add(ArrayList<Value> item){
         int k = 0;
 
-        for(Object currentField : item) {
-            if (!item.get(k).getClass().getName().equals(sledzParser(this.table.get(k).type))) {
-                throw new ArithmeticException("Wrong data type");
-            }
+        for(Value currentField : item) {
             this.table.get(k).obj.add(currentField);
             k++;
         }

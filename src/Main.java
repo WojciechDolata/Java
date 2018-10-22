@@ -67,5 +67,19 @@ public class Main {
         System.out.println(b.add(new DoubleValue(10.0)).eq(a));
 
 
+        IntegerValue alko = new IntegerValue(20);
+        IntegerValue alko2 = new IntegerValue(10);
+        Column kolumna = new Column("pierwsza", alko.getClass());
+        kolumna.obj.add(alko);
+        kolumna.obj.add(alko2);
+        String[] kolumnnn = new String[1];
+        kolumnnn[0]="pierwsza";
+        ArrayList<Class <? extends Value>> typy = new ArrayList<>();
+        typy.add(alko.getClass());
+        ArrayList<Value> item1 = new ArrayList<>();
+        item1.add(alko);
+        DataFrame nowarama = new DataFrame(kolumnnn,typy);
+        nowarama.add(item1);
+        nowarama.print();
     }
 }
