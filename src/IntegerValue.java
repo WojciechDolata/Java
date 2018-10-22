@@ -1,44 +1,139 @@
+import java.util.Objects;
 
 public class IntegerValue extends Value{
-    //public Integer val = 0;
+
+    public Integer val;
+
     public IntegerValue(Integer valToBe){
-        val = new Integer(valToBe);
-    }
-    public IntegerValue(){
-        val = new Integer(0);
+        val = valToBe;
     }
 
+    public IntegerValue(String valToBe){
+        val = Integer.parseInt(valToBe);
+    }
+
+    public IntegerValue(){
+        val = 0;
+    }
+
+    @Override
+    public Value create(String other) {
+        return new IntegerValue(other);
+    }
+
+    @Override
     public String toString(){
         return String.valueOf(val);
     }
 
-    public Value add(IntegerValue other){
-        return new IntegerValue(val+other.val);
+    @Override
+    public Value add(Value other){
+        if (other instanceof  IntegerValue) {
+            return  new IntegerValue(val + (Integer)other.getVal());
+        }
+        else {
+            throw new ArithmeticException("Wartosci maja niekompatybilne typy");
+        }
     }
 
-    public Value sub(IntegerValue other){
-        this.val = other.val;
-        return this;
+    @Override
+    public Value sub(Value other){
+        if (other instanceof  IntegerValue) {
+            return  new IntegerValue(val - (Integer)other.getVal());
+        }
+        else {
+            throw new ArithmeticException("Wartosci maja niekompatybilne typy");
+        }
     }
 
-    public boolean eq(IntegerValue other){
-        return this.equals(other.val);
+    @Override
+    public Value mul(Value other){
+        if (other instanceof  IntegerValue) {
+            return  new IntegerValue(val * (Integer)other.getVal());
+        }
+        else {
+            throw new ArithmeticException("Wartosci maja niekompatybilne typy");
+        }
     }
 
-    public boolean neq(IntegerValue other){
-        return !this.equals(other.val);
+    @Override
+    public Value div(Value other){
+        if (other instanceof  IntegerValue) {
+            return  new IntegerValue(val / (Integer)other.getVal());
+        }
+        else {
+            throw new ArithmeticException("Wartosci maja niekompatybilne typy");
+        }
     }
 
-    public boolean equals(Object other){
-        if (other.equals(this.val))
+    @Override
+    public Value pow(Value other){
+        if (other instanceof  IntegerValue) {
+            Double g = Math.pow(val, (Integer)other.getVal());
+            return  new IntegerValue(g.intValue());
+        }
+        else {
+            throw new ArithmeticException("Wartosci maja niekompatybilne typy");
+        }
+    }
+
+    @Override
+    public boolean eq(Value other){
+        if (other instanceof  IntegerValue && other.getVal().equals(val)) {
             return true;
-        return false;
+        }
+        else if (other instanceof  IntegerValue && !other.getVal().equals(val)) {
+            return false;
+        }
+        else {
+            throw new ArithmeticException("Wartosci maja niekompatybilne typy");
+        }
     }
 
-    public int hashCode(){
-        return this.val.hashCode();
+    @Override
+    public boolean neq(Value other){
+        return !eq(other);
     }
-    
+
+    @Override
+    public boolean gte(Value other){
+
+        if (other instanceof IntegerValue) {
+            return ((Integer) other.getVal() >= val);
+        }
+        else {
+            throw new ArithmeticException("Wartosci maja niekompatybilne typy");
+        }
+    }
+
+    @Override
+    public boolean lte(Value other){
+
+        if (other instanceof IntegerValue){
+            return ((Integer)other.getVal() >= val);
+        }
+        else {
+            throw new ArithmeticException("Wartosci maja niekompatybilne typy");
+        }
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof IntegerValue)) return false;
+        IntegerValue that = (IntegerValue) o;
+        return Objects.equals(val, that.val);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(val);
+    }
+
+    @Override
+    public Object getVal(){
+        return val;
+    }
 
 
 }

@@ -55,57 +55,17 @@ public class Main {
     }
 
     public static void main (String[] args) throws IOException {
-        String [] p = {"aaa" , "bbb" };
-        String [] d = {"int", "int"};
-        String [] typy = {"double", "double","double"};
-        SparseDataFrame nowaRama = new SparseDataFrame(p,d,"0");
 
-        ArrayList<Object> nowyObj = new ArrayList<>();
-        ArrayList<Object> nowyObj2 = new ArrayList<>();
-        nowyObj.add(0,0);
-        nowyObj.add(1,1);
-        nowaRama.add(nowyObj);
-        nowyObj2.add(0,2);
-        nowyObj2.add(1,200);
-        nowaRama.add(nowyObj2);
-        nowaRama.print();
 
-//        String [] l = {"aaa" , "bbb" };
-//        String [] r = {"int", "int"};
-//        DataFrame rama = new DataFrame(l,r );
-//        ArrayList<Object> arraylist = new ArrayList<Object>();
-//        ArrayList<Column> arraylist2 = new ArrayList<Column>();
-//        arraylist.add(233);
-//        arraylist.add(333);
-//        rama.add(arraylist);
-//        arraylist2 = rama.get( l,false );
-//        rama.table.get(0).name= "jajka";
-//        System.out.println(rama.table.get(0).obj.get(0));
-//        System.out.println(rama.table.get(1).obj.get(0));
-//        SparseDataFrame tmpRama = new SparseDataFrame(rama);
-//        tmpRama.print();
+        DoubleValue a = new DoubleValue("20");
+        System.out.println(a.getVal());
+        DoubleValue b = new DoubleValue(10.0);
+        System.out.println(b.getVal());
+        b.add(new DoubleValue(10));
+        System.out.println(b.getVal());
+        System.out.println(b.add(new DoubleValue(10.0)).equals(a));
+        System.out.println(b.add(new DoubleValue(10.0)).eq(a));
 
-        DataFrame jeszcze1 = nowaRama.toDense();
-        SparseDataFrame tmpRama2 = new SparseDataFrame(jeszcze1);
-        tmpRama2.print();
-
-//        // Open the file
-//        FileInputStream fstream = new FileInputStream("./data.csv");
-//        BufferedReader br = new BufferedReader(new InputStreamReader(fstream));
-//
-//        String strLine;
-//
-//        //Read File Line By Line
-//        while ((strLine = br.readLine()) != null)   {
-//            // Print the content on the console
-//            System.out.println (strLine);
-//        }
-//
-//        //Close the input stream
-//        br.close();
-
-        DataFrame rrrrr = new DataFrame ("./data.csv",typy, true);
-        rrrrr.print();
 
     }
 }
