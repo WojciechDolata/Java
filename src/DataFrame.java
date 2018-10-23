@@ -1,11 +1,13 @@
 import java.io.*;
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Scanner;
 
 public class DataFrame {
 
     public ArrayList<Column> table = new ArrayList<>(0);
+    public ArrayList<Class<? extends Value>> types = new ArrayList<>();
 
     private int iterator = 0;
 
@@ -14,15 +16,18 @@ public class DataFrame {
     }
 
     public DataFrame(String[] kolumny, ArrayList<Class<? extends Value>> typy){
-
+        types=typy;
         int ite=0;
         for(String columnaName : kolumny) {
             table.add(new Column(columnaName,typy.get(ite)));
             ite++;
         }
+    
+    
     }
 
     public DataFrame(String fileName, ArrayList<Class<? extends Value>> typy, boolean header) throws IOException {
+        types=typy;
         FileInputStream fstream = new FileInputStream(fileName);
         BufferedReader br = new BufferedReader(new InputStreamReader(fstream));
 
@@ -229,5 +234,32 @@ public class DataFrame {
                 break;
         }
         return a;
+    }
+    public LinkedList<DataFrame> groupby(String colname){
+        LinkedList<DataFrame> returnable = new LinkedList<>();
+        int colNum = 0;
+        for(Column currentCol : table){
+            if(currentCol.name.equals(colname)){
+                for(int i=0; i<table.size(); i++){
+                    boolean isThereAny = false;
+                    for(DataFrame currentDf : returnable){
+                       if(currentDf.table.get(colNum).name.equals(colname)){
+                           currentDf.add(getItem(i));
+                           isThereAny = true;
+                       }
+                    }
+                    if(!isThereAny){
+                        DataFrame tmpFrame = new DataFrame(getColNames(),types);
+                        tmpFrame.add(getItem(i));
+                        returnable.add(tmpFrame);
+                    }
+                }
+            }
+            colNum++;
+        }
+        for(DataFrame currentDf:returnable){
+            currentDf.print();
+        }
+        return returnable;
     }
 }
