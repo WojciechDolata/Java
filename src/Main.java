@@ -56,30 +56,45 @@ public class Main {
 
     public static void main (String[] args) throws IOException {
 
+        IntegerValue id = new IntegerValue(1);
+        IntegerValue id1 = new IntegerValue(2);
+        IntegerValue id2 = new IntegerValue(3);
+        IntegerValue f = new IntegerValue(20);
+        IntegerValue f1 = new IntegerValue(20);
+        IntegerValue f2 = new IntegerValue(5);
+        StringValue fss = new StringValue("banknot 20 zlotych");
+        StringValue fss2 = new StringValue("moneta 20 zlotych");
+        StringValue fss3 = new StringValue("moneta 5 zlotych");
 
-        DoubleValue a = new DoubleValue("20");
-        System.out.println(a.getVal());
-        DoubleValue b = new DoubleValue(10.0);
-        System.out.println(b.getVal());
-        b.add(new DoubleValue(10));
-        System.out.println(b.getVal());
-        System.out.println(b.add(new DoubleValue(10.0)).equals(a));
-        System.out.println(b.add(new DoubleValue(10.0)).eq(a));
-
-
-        IntegerValue alko = new IntegerValue(20);
-        IntegerValue alko2 = new IntegerValue(10);
-        Column kolumna = new Column("pierwsza", alko.getClass());
-        kolumna.obj.add(alko);
-        kolumna.obj.add(alko2);
-        String[] kolumnnn = new String[1];
-        kolumnnn[0]="pierwsza";
-        ArrayList<Class <? extends Value>> typy = new ArrayList<>();
-        typy.add(alko.getClass());
-        ArrayList<Value> item1 = new ArrayList<>();
-        item1.add(alko);
-        DataFrame nowarama = new DataFrame(kolumnnn,typy);
+        String[] nazwy = {"id", "wartosc", "opis"};
+        ArrayList<Class<? extends Value>> typy = new ArrayList<>();
+        typy.add(id.getClass());
+        typy.add(f.getClass());
+        typy.add(fss.getClass());
+        ArrayList<Value> item1 =new ArrayList<>();
+        item1.add(id);
+        item1.add(f);
+        item1.add(fss);
+        ArrayList<Value> item2 =new ArrayList<>();
+        item2.add(id1);
+        item2.add(f1);
+        item2.add(fss2);
+        ArrayList<Value> item3 =new ArrayList<>();
+        item3.add(id2);
+        item3.add(f2);
+        item3.add(fss3);
+        DataFrame nowarama = new DataFrame(nazwy,typy);
         nowarama.add(item1);
+        nowarama.add(item3);
+        nowarama.add(item2);
+
         nowarama.print();
+        String[] sort = { "wartosc","id",};
+        DataFrame.DFGroup nowagrupa = nowarama.groupby(sort);
+
+
+
+
+
     }
 }

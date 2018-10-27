@@ -1,10 +1,46 @@
-import java.io.*;
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Scanner;
+import sun.awt.image.ImageWatched;
 
-public class DataFrame {
+import javax.xml.crypto.Data;
+import java.io.*;
+import java.util.*;
+
+public class DataFrame{
+
+    public class DFGroup implements Groupby{
+        DataFrame frame;
+        DFGroup(String[] kolumny, ArrayList<Class<? extends Value>> typy){
+            frame = new DataFrame(kolumny, typy);
+        }
+        @Override
+        public DataFrame max() {
+            return null;
+        }
+
+        @Override
+        public DataFrame mean() {
+            return null;
+        }
+
+        @Override
+        public DataFrame std() {
+            return null;
+        }
+
+        @Override
+        public DataFrame sum() {
+            return null;
+        }
+
+        @Override
+        public DataFrame var() {
+            return null;
+        }
+
+        @Override
+        public DataFrame apply(Applyable a) {
+            return null;
+        }
+    }
 
     public ArrayList<Column> table = new ArrayList<>(0);
     public ArrayList<Class<? extends Value>> types = new ArrayList<>();
@@ -131,7 +167,6 @@ public class DataFrame {
         for(Column currentCol : this.table) {
             returnable[i] = currentCol.name;
             i++;
-            System.out.println(currentCol.name);
         }
         return returnable;
     }
@@ -143,12 +178,14 @@ public class DataFrame {
         return returnable;
     }
 
+
+
     //dziala
     public DataFrame iloc(int from, int to){
         DataFrame returnable = new DataFrame();
 
         for(int i = from; i <= to; i++){
-            //returnable.add(getItem(i));
+            returnable.add(getItem(i));
         }
         return returnable;
     }
@@ -235,30 +272,89 @@ public class DataFrame {
         }
         return a;
     }
+
+    private int getColNumberInRow (String a){
+        int i=0;
+        for(String current:this.getColNames()){
+            if(current.equals(a)) {
+                return i;
+            }
+            i++;
+        }
+        return 0;
+    }
+
+    class SortingDataFrame implements Comparator<ArrayList<Value>>{
+        private String[] parameters;
+
+        private SortingDataFrame(String[] parameters) {
+            this.parameters = parameters;
+        }
+
+        @Override
+        public int compare(ArrayList<Value> o1, ArrayList<Value> o2) {
+            System.out.println("zaczynam porownywac");
+            System.out.println(o1.get(0));
+            System.out.println(o2.get(0));
+            for(String currentCol : parameters){
+                System.out.println(currentCol);
+                System.out.println(o1.get(getColNumberInRow(currentCol)));
+                if (!o1.get(getColNumberInRow(currentCol)).equals(o2.get(getColNumberInRow(currentCol)))){
+                    System.out.println(o1.get(getColNumberInRow(currentCol)).lte(o2.get(getColNumberInRow(currentCol))));
+                    return o1.get(getColNumberInRow(currentCol)).lte(o2.get(getColNumberInRow(currentCol))) ?  -1 : 1;
+                }
+            }
+            return 1;
+        }
+    }
+
+    public ArrayList<ArrayList<Value>> getArrayList(){
+        ArrayList<ArrayList<Value>> returnable = new ArrayList<>();
+        for(int i =0; i<size(); i++){
+            returnable.add(getItem(i));
+        }
+        return returnable;
+    }
+
+    //tu trzeba robić
+    public DFGroup groupby(String[] colnames){
+        DFGroup returnable = new DFGroup(getColNames(),types);
+        ArrayList<ArrayList<Value>> ar = getArrayList();
+        Collections.sort(ar,new SortingDataFrame(colnames));
+        for(ArrayList<Value> curItem : ar) {
+            returnable.frame.add(curItem);
+        }
+        returnable.frame.print();
+        return returnable;
+    }
+
     public LinkedList<DataFrame> groupby(String colname){
         LinkedList<DataFrame> returnable = new LinkedList<>();
+        System.out.println(returnable);
         int colNum = 0;
         for(Column currentCol : table){
+            System.out.println("Przetrwarzam kolumnę: ");
+            System.out.println(currentCol.name);
             if(currentCol.name.equals(colname)){
                 for(int i=0; i<table.size(); i++){
+                    System.out.println(getItem(i));
                     boolean isThereAny = false;
                     for(DataFrame currentDf : returnable){
-                       if(currentDf.table.get(colNum).name.equals(colname)){
-                           currentDf.add(getItem(i));
-                           isThereAny = true;
-                       }
+                        System.out.println("iterating through returnable list");
+                        if(currentDf.table.get(colNum).obj.get(0).equals(getItem(i).get(getColNumberInRow(colname)))){
+                            currentDf.add(getItem(i));
+                            isThereAny = true;
+                        }
                     }
                     if(!isThereAny){
                         DataFrame tmpFrame = new DataFrame(getColNames(),types);
                         tmpFrame.add(getItem(i));
                         returnable.add(tmpFrame);
                     }
+                    System.out.println(returnable);
                 }
             }
             colNum++;
-        }
-        for(DataFrame currentDf:returnable){
-            currentDf.print();
         }
         return returnable;
     }
