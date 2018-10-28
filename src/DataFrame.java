@@ -8,11 +8,15 @@ public class DataFrame{
 
     public class DFGroup implements Groupby{
         DataFrame frame;
-        DFGroup(String[] kolumny, ArrayList<Class<? extends Value>> typy){
+        String [] colToSort;
+        DFGroup(String[] kolumny, ArrayList<Class<? extends Value>> typy, String[] colnames){
+            colToSort = colnames;
             frame = new DataFrame(kolumny, typy);
         }
         @Override
         public DataFrame max() {
+
+
             return null;
         }
 
@@ -178,8 +182,6 @@ public class DataFrame{
         return returnable;
     }
 
-
-
     //dziala
     public DataFrame iloc(int from, int to){
         DataFrame returnable = new DataFrame();
@@ -293,14 +295,8 @@ public class DataFrame{
 
         @Override
         public int compare(ArrayList<Value> o1, ArrayList<Value> o2) {
-            System.out.println("zaczynam porownywac");
-            System.out.println(o1.get(0));
-            System.out.println(o2.get(0));
             for(String currentCol : parameters){
-                System.out.println(currentCol);
-                System.out.println(o1.get(getColNumberInRow(currentCol)));
                 if (!o1.get(getColNumberInRow(currentCol)).equals(o2.get(getColNumberInRow(currentCol)))){
-                    System.out.println(o1.get(getColNumberInRow(currentCol)).lte(o2.get(getColNumberInRow(currentCol))));
                     return o1.get(getColNumberInRow(currentCol)).lte(o2.get(getColNumberInRow(currentCol))) ?  -1 : 1;
                 }
             }
@@ -318,7 +314,7 @@ public class DataFrame{
 
     //tu trzeba robić
     public DFGroup groupby(String[] colnames){
-        DFGroup returnable = new DFGroup(getColNames(),types);
+        DFGroup returnable = new DFGroup(getColNames(),types, colnames);
         ArrayList<ArrayList<Value>> ar = getArrayList();
         Collections.sort(ar,new SortingDataFrame(colnames));
         for(ArrayList<Value> curItem : ar) {
@@ -330,17 +326,12 @@ public class DataFrame{
 
     public LinkedList<DataFrame> groupby(String colname){
         LinkedList<DataFrame> returnable = new LinkedList<>();
-        System.out.println(returnable);
         int colNum = 0;
         for(Column currentCol : table){
-            System.out.println("Przetrwarzam kolumnę: ");
-            System.out.println(currentCol.name);
             if(currentCol.name.equals(colname)){
                 for(int i=0; i<table.size(); i++){
-                    System.out.println(getItem(i));
                     boolean isThereAny = false;
                     for(DataFrame currentDf : returnable){
-                        System.out.println("iterating through returnable list");
                         if(currentDf.table.get(colNum).obj.get(0).equals(getItem(i).get(getColNumberInRow(colname)))){
                             currentDf.add(getItem(i));
                             isThereAny = true;
@@ -351,7 +342,6 @@ public class DataFrame{
                         tmpFrame.add(getItem(i));
                         returnable.add(tmpFrame);
                     }
-                    System.out.println(returnable);
                 }
             }
             colNum++;
