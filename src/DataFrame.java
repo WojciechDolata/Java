@@ -17,6 +17,24 @@ public class DataFrame{
             frame = new DataFrame(kolumny, typy);
         }
 
+        private Value createValObj(String s){
+            Value returnable;
+            if(s.equals("IntegerValue")){
+                returnable = new IntegerValue();
+            }
+            else if(s.equals("FloatValue")){
+                returnable = new FloatValue("1.0");
+            }
+            else if(s.equals("DoubleValue")){
+                returnable = new DoubleValue("1.0");
+            }
+            else {
+                returnable = new IntegerValue();
+            }
+
+            return returnable;
+        }
+
         @Override
         public DataFrame max() {
             ArrayList<Integer> colIds = new ArrayList<>();
@@ -81,8 +99,7 @@ public class DataFrame{
             return returnable;
         }
 
-        @Override
-        public DataFrame mean() {
+        private LinkedList<DataFrame> removingSpareCols(){
             LinkedList<DataFrame> tmpSeparatedDFs = new LinkedList<>();
             for(DataFrame df : separatedDFs) tmpSeparatedDFs.add(df.iloc(0,df.size()-1));
             DataFrame tmpFrame = frame.iloc(0,size()-1);
@@ -100,12 +117,21 @@ public class DataFrame{
                 }
                 else i++;
             }
+            return tmpSeparatedDFs;
+        }
 
+        @Override
+        public DataFrame mean() {
+            LinkedList<DataFrame> tmpSeparatedDFs = removingSpareCols();
+            DataFrame tmpFrame = frame.iloc(0,size()-1);
+            ArrayList<Integer> colIds = new ArrayList<>();
+            for( int j = 0; j< colToSort.length; j++){
+                colIds.add(getColNumberInRow(colToSort[j]));
+            }
             DataFrame returnable = new DataFrame(tmpSeparatedDFs.get(0).getColNames(),tmpSeparatedDFs.get(0).getTypes());
 
             for(DataFrame df : tmpSeparatedDFs){
                 ArrayList<Value> itemToAdd = new ArrayList<>();
-                i=0;
                 for(Column curCol : df.table){
                     if(colIds.contains(tmpFrame.getColNumberInRow(curCol.name))){
                         itemToAdd.add(curCol.obj.get(0));
@@ -115,50 +141,27 @@ public class DataFrame{
                         for (int j = 1; j < curCol.obj.size(); j++) {
                             tmpVal = tmpVal.add(curCol.obj.get(j));
                         }
-                        Value devisor;
-                        if(curCol.type.getName().equals("IntegerValue")){
-                            devisor = new IntegerValue(curCol.obj.size());
-                        }
-                        else if(curCol.type.getName().equals("FloatValue")){
-                            devisor = new FloatValue(curCol.obj.size());
-                        }
-                        else if(curCol.type.getName().equals("DoubleValue")){
-                            devisor = new DoubleValue(curCol.obj.size());
-                        }
-                        else {
-                            devisor = new IntegerValue(curCol.obj.size());
-                        }
+                        Value devisor = createValObj(curCol.type.getName());
+                        devisor.set(String.valueOf(curCol.obj.size()));
                         tmpVal = tmpVal.div(devisor);
                         itemToAdd.add(tmpVal);
                     }
-                    i++;
                 }
                 returnable.add(itemToAdd);
             }
             return returnable;
         }
 
-
         @Override
         public DataFrame std() {
             DataFrame meanDF = this.mean();
-            LinkedList<DataFrame> tmpSeparatedDFs = new LinkedList<>();
-            for(DataFrame df : separatedDFs) tmpSeparatedDFs.add(df.iloc(0,df.size()-1));
+            LinkedList<DataFrame> tmpSeparatedDFs = removingSpareCols();
             DataFrame tmpFrame = frame.iloc(0,size()-1);
             ArrayList<Integer> colIds = new ArrayList<>();
             for( int j = 0; j< colToSort.length; j++){
                 colIds.add(getColNumberInRow(colToSort[j]));
             }
-            int i=0;
-            for(Column curCol : tmpFrame.table){
-                if(!(colIds.contains(tmpFrame.getColNumberInRow(curCol.name)) || curCol.type.getName().equals("IntegerValue") || curCol.type.getName().equals("FloatValue") || curCol.type.getName().equals("DoubleValue"))){
-                    int k=0;
-                    for(k=0;k<tmpSeparatedDFs.size(); k++){
-                        tmpSeparatedDFs.get(k).table.remove(i);
-                    }
-                }
-                else i++;
-            }
+            int i;
 
             DataFrame returnable = new DataFrame(tmpSeparatedDFs.get(0).getColNames(),tmpSeparatedDFs.get(0).getTypes());
             int k=0;
@@ -171,23 +174,8 @@ public class DataFrame{
                     }
                     else {
                         Value tmpVal = curCol.obj.get(0);
-                        Value powerer, multiplier;
-                        if(curCol.type.getName().equals("IntegerValue")){
-                            powerer = new IntegerValue(curCol.obj.size());
-                            multiplier = new IntegerValue(curCol.obj.size());
-                        }
-                        else if(curCol.type.getName().equals("FloatValue")){
-                            powerer = new FloatValue(curCol.obj.size());
-                            multiplier = new FloatValue(curCol.obj.size());
-                        }
-                        else if(curCol.type.getName().equals("DoubleValue")){
-                            powerer = new DoubleValue(curCol.obj.size());
-                            multiplier = new DoubleValue(curCol.obj.size());
-                        }
-                        else {
-                            powerer = new IntegerValue(curCol.obj.size());
-                            multiplier = new IntegerValue(curCol.obj.size());
-                        }
+                        Value powerer = createValObj(curCol.type.getName()), multiplier = createValObj(curCol.type.getName());
+
                         powerer.set("2");
                         multiplier.set(String.valueOf(df.size()));
                         for (int j = 1; j < curCol.obj.size(); j++) {
@@ -257,23 +245,13 @@ public class DataFrame{
         @Override
         public DataFrame var() {
             DataFrame meanDF = this.mean();
-            LinkedList<DataFrame> tmpSeparatedDFs = new LinkedList<>();
-            for(DataFrame df : separatedDFs) tmpSeparatedDFs.add(df.iloc(0,df.size()-1));
+            LinkedList<DataFrame> tmpSeparatedDFs = removingSpareCols();
             DataFrame tmpFrame = frame.iloc(0,size()-1);
             ArrayList<Integer> colIds = new ArrayList<>();
             for( int j = 0; j< colToSort.length; j++){
                 colIds.add(getColNumberInRow(colToSort[j]));
             }
-            int i=0;
-            for(Column curCol : tmpFrame.table){
-                if(!(colIds.contains(tmpFrame.getColNumberInRow(curCol.name)) || curCol.type.getName().equals("IntegerValue") || curCol.type.getName().equals("FloatValue") || curCol.type.getName().equals("DoubleValue"))){
-                    int k=0;
-                    for(k=0;k<tmpSeparatedDFs.size(); k++){
-                        tmpSeparatedDFs.get(k).table.remove(i);
-                    }
-                }
-                else i++;
-            }
+            int i;
 
             DataFrame returnable = new DataFrame(tmpSeparatedDFs.get(0).getColNames(),tmpSeparatedDFs.get(0).getTypes());
             int k=0;
@@ -286,23 +264,8 @@ public class DataFrame{
                     }
                     else {
                         Value tmpVal = curCol.obj.get(0);
-                        Value powerer, multiplier;
-                        if(curCol.type.getName().equals("IntegerValue")){
-                            powerer = new IntegerValue(curCol.obj.size());
-                            multiplier = new IntegerValue(curCol.obj.size());
-                        }
-                        else if(curCol.type.getName().equals("FloatValue")){
-                            powerer = new FloatValue(curCol.obj.size());
-                            multiplier = new FloatValue(curCol.obj.size());
-                        }
-                        else if(curCol.type.getName().equals("DoubleValue")){
-                            powerer = new DoubleValue(curCol.obj.size());
-                            multiplier = new DoubleValue(curCol.obj.size());
-                        }
-                        else {
-                            powerer = new IntegerValue(curCol.obj.size());
-                            multiplier = new IntegerValue(curCol.obj.size());
-                        }
+                        Value powerer = createValObj(curCol.type.getName()), multiplier = createValObj(curCol.type.getName());
+
                         powerer.set("2");
                         multiplier.set(String.valueOf(df.size()));
                         for (int j = 1; j < curCol.obj.size(); j++) {
@@ -321,8 +284,11 @@ public class DataFrame{
             return returnable;
         }
 
-        @Override
+        @Override// nie ma
         public DataFrame apply(Applyable a) {
+            for(DataFrame df : separatedDFs){
+                a.apply(df);
+            }
             return null;
         }
     }
