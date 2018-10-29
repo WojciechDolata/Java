@@ -101,13 +101,19 @@ public class Main {
         typy2.add(new StringValue("1999-01-01").getClass());
         typy2.add(new FloatValue(0.1).getClass());
         typy2.add(new DoubleValue(1.0).getClass());
-        DataFrame groupbytest = new DataFrame("C:\\Users\\dwojt\\Documents\\Java\\groubymulti2.csv", typy2, true);
+        DataFrame groupbytest = new DataFrame("C:\\Users\\dwojt\\Documents\\Java\\groupby.csv", typy2, true);
         DataFrame.DFGroup nowagrupatest = groupbytest.groupby(sort);
 
         nowagrupatest.max().print();
         nowagrupatest.min().print();
+
         nowagrupatest.mean().print();//gdzies mi co 2. rekord zjada
-        //for(DataFrame df : nowagrupatest.separatedDFs) df.print();
+        nowagrupatest.std().print();
+        nowagrupatest.var().print();
+        nowagrupatest.sum().print();
+
+//        nowagrupatest.frame.print();
+
 
 
 

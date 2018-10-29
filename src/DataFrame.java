@@ -138,70 +138,187 @@ public class DataFrame{
             return returnable;
         }
 
-        //        @Override
-//        public DataFrame mean() {
-//            int i=0;
-//            DataFrame tmpFrame = frame.iloc(0,size()-1);
-//            LinkedList <DataFrame> tmpSeparatedDFs = new LinkedList<>();
-//            ArrayList<Class<? extends Value>> tmpTypes = separatedDFs.get(0).getTypes();
-//            for(DataFrame df : separatedDFs) tmpSeparatedDFs.add(df.iloc(0,df.size()-1));
-//            ArrayList<Integer> colIds = new ArrayList<>();
-//            for( int j = 0; j< colToSort.length; j++){
-//                colIds.add(getColNumberInRow(colToSort[j]));
-//            }
-//
-//            System.out.println("rozmiar typow i df'a");
-//            System.out.println(tmpTypes.size());
-//            System.out.println(tmpSeparatedDFs.get(0).getColNum());
-//
-//            for(Column curCol:tmpSeparatedDFs.get(0).table){
-//                Class<? extends Value> curType = curCol.type;
-//                // mozna zrobic ze nie wyrzuca bledu przy próbie operacji matematycznej
-//                if(!(curType.toString().equals("DoubleValue") || curType.toString().equals("FloatValue") || curType.toString().equals("IntegerValue") || colIds.contains(tmpFrame.getColNumberInRow(curCol.name)) )){
-//                    for(DataFrame df : tmpSeparatedDFs){
-//                        df.print();
-//                        System.out.println(i);
-//                        System.out.println(tmpTypes.size());
-//                        df.table.remove(i);
-//                        tmpTypes.remove(i);
-//                    }
-//                }
-//                else i++;
-//            }
-//
-//            DataFrame returnable = new DataFrame(tmpSeparatedDFs.get(0).getColNames(),tmpTypes);
-//
-//            for(DataFrame df : tmpSeparatedDFs){
-//                ArrayList<Value> itemToAdd = new ArrayList<>();
-//                i=0;
-//                for(Column curCol : df.table){
-//                    Value tmpVal = curCol.obj.get(0);
-//                    for(int j = 1; j<curCol.obj.size(); j++ ){
-//                        tmpVal = tmpVal.add(curCol.obj.get(j));
-//                    }
-//                    Value devisor = types.get(i).cast(df.getColNum());
-//                    tmpVal = tmpVal.div(devisor);
-//                    i++;
-//                    itemToAdd.add(tmpVal);
-//                }
-//                returnable.add(itemToAdd);
-//            }
-//            return returnable;
-//        }
 
         @Override
         public DataFrame std() {
-            return null;
+            DataFrame meanDF = this.mean();
+            LinkedList<DataFrame> tmpSeparatedDFs = new LinkedList<>();
+            for(DataFrame df : separatedDFs) tmpSeparatedDFs.add(df.iloc(0,df.size()-1));
+            DataFrame tmpFrame = frame.iloc(0,size()-1);
+            ArrayList<Integer> colIds = new ArrayList<>();
+            for( int j = 0; j< colToSort.length; j++){
+                colIds.add(getColNumberInRow(colToSort[j]));
+            }
+            int i=0;
+            for(Column curCol : tmpFrame.table){
+                if(!(colIds.contains(tmpFrame.getColNumberInRow(curCol.name)) || curCol.type.getName().equals("IntegerValue") || curCol.type.getName().equals("FloatValue") || curCol.type.getName().equals("DoubleValue"))){
+                    int k=0;
+                    for(k=0;k<tmpSeparatedDFs.size(); k++){
+                        tmpSeparatedDFs.get(k).table.remove(i);
+                    }
+                }
+                else i++;
+            }
+
+            DataFrame returnable = new DataFrame(tmpSeparatedDFs.get(0).getColNames(),tmpSeparatedDFs.get(0).getTypes());
+            int k=0;
+            for(DataFrame df : tmpSeparatedDFs){
+                ArrayList<Value> itemToAdd = new ArrayList<>();
+                i=0;
+                for(Column curCol : df.table){
+                    if(colIds.contains(tmpFrame.getColNumberInRow(curCol.name))){
+                        itemToAdd.add(curCol.obj.get(0));
+                    }
+                    else {
+                        Value tmpVal = curCol.obj.get(0);
+                        Value powerer, multiplier;
+                        if(curCol.type.getName().equals("IntegerValue")){
+                            powerer = new IntegerValue(curCol.obj.size());
+                            multiplier = new IntegerValue(curCol.obj.size());
+                        }
+                        else if(curCol.type.getName().equals("FloatValue")){
+                            powerer = new FloatValue(curCol.obj.size());
+                            multiplier = new FloatValue(curCol.obj.size());
+                        }
+                        else if(curCol.type.getName().equals("DoubleValue")){
+                            powerer = new DoubleValue(curCol.obj.size());
+                            multiplier = new DoubleValue(curCol.obj.size());
+                        }
+                        else {
+                            powerer = new IntegerValue(curCol.obj.size());
+                            multiplier = new IntegerValue(curCol.obj.size());
+                        }
+                        powerer.set("2");
+                        multiplier.set(String.valueOf(df.size()));
+                        for (int j = 1; j < curCol.obj.size(); j++) {
+                            tmpVal = tmpVal.add(curCol.obj.get(j).sub(meanDF.getItem(k).get(i)).pow(powerer));
+                        }
+                        tmpVal = tmpVal.div(multiplier);
+                        powerer.set("0.5");
+                        tmpVal = tmpVal.pow(powerer);
+                        itemToAdd.add(tmpVal);
+                    }
+                    i++;
+                }
+                k++;
+                returnable.add(itemToAdd);
+            }
+
+
+            return returnable;
         }
 
         @Override
         public DataFrame sum() {
-            return null;
+            LinkedList<DataFrame> tmpSeparatedDFs = new LinkedList<>();
+            for(DataFrame df : separatedDFs) tmpSeparatedDFs.add(df.iloc(0,df.size()-1));
+            DataFrame tmpFrame = frame.iloc(0,size()-1);
+            ArrayList<Integer> colIds = new ArrayList<>();
+            for( int j = 0; j< colToSort.length; j++){
+                colIds.add(getColNumberInRow(colToSort[j]));
+            }
+            int i=0;
+            for(Column curCol : tmpFrame.table){
+                if(!(colIds.contains(tmpFrame.getColNumberInRow(curCol.name)) || curCol.type.getName().equals("IntegerValue") || curCol.type.getName().equals("FloatValue") || curCol.type.getName().equals("DoubleValue"))){
+                    int k=0;
+                    for(k=0;k<tmpSeparatedDFs.size(); k++){
+                        tmpSeparatedDFs.get(k).table.remove(i);
+                    }
+                }
+                else i++;
+            }
+
+            DataFrame returnable = new DataFrame(tmpSeparatedDFs.get(0).getColNames(),tmpSeparatedDFs.get(0).getTypes());
+            for(DataFrame df : tmpSeparatedDFs){
+                ArrayList<Value> itemToAdd = new ArrayList<>();
+                i=0;
+                for(Column curCol : df.table){
+                    if(colIds.contains(tmpFrame.getColNumberInRow(curCol.name))){
+                        itemToAdd.add(curCol.obj.get(0));
+                    }
+                    else {
+                        Value tmpVal = curCol.obj.get(0);
+                        for (int j = 1; j < curCol.obj.size(); j++) {
+                            tmpVal = tmpVal.add(curCol.obj.get(j));
+                        }
+
+                        itemToAdd.add(tmpVal);
+                    }
+                    i++;
+                }
+                returnable.add(itemToAdd);
+            }
+
+
+            return returnable;
+
         }
 
         @Override
         public DataFrame var() {
-            return null;
+            DataFrame meanDF = this.mean();
+            LinkedList<DataFrame> tmpSeparatedDFs = new LinkedList<>();
+            for(DataFrame df : separatedDFs) tmpSeparatedDFs.add(df.iloc(0,df.size()-1));
+            DataFrame tmpFrame = frame.iloc(0,size()-1);
+            ArrayList<Integer> colIds = new ArrayList<>();
+            for( int j = 0; j< colToSort.length; j++){
+                colIds.add(getColNumberInRow(colToSort[j]));
+            }
+            int i=0;
+            for(Column curCol : tmpFrame.table){
+                if(!(colIds.contains(tmpFrame.getColNumberInRow(curCol.name)) || curCol.type.getName().equals("IntegerValue") || curCol.type.getName().equals("FloatValue") || curCol.type.getName().equals("DoubleValue"))){
+                    int k=0;
+                    for(k=0;k<tmpSeparatedDFs.size(); k++){
+                        tmpSeparatedDFs.get(k).table.remove(i);
+                    }
+                }
+                else i++;
+            }
+
+            DataFrame returnable = new DataFrame(tmpSeparatedDFs.get(0).getColNames(),tmpSeparatedDFs.get(0).getTypes());
+            int k=0;
+            for(DataFrame df : tmpSeparatedDFs){
+                ArrayList<Value> itemToAdd = new ArrayList<>();
+                i=0;
+                for(Column curCol : df.table){
+                    if(colIds.contains(tmpFrame.getColNumberInRow(curCol.name))){
+                        itemToAdd.add(curCol.obj.get(0));
+                    }
+                    else {
+                        Value tmpVal = curCol.obj.get(0);
+                        Value powerer, multiplier;
+                        if(curCol.type.getName().equals("IntegerValue")){
+                            powerer = new IntegerValue(curCol.obj.size());
+                            multiplier = new IntegerValue(curCol.obj.size());
+                        }
+                        else if(curCol.type.getName().equals("FloatValue")){
+                            powerer = new FloatValue(curCol.obj.size());
+                            multiplier = new FloatValue(curCol.obj.size());
+                        }
+                        else if(curCol.type.getName().equals("DoubleValue")){
+                            powerer = new DoubleValue(curCol.obj.size());
+                            multiplier = new DoubleValue(curCol.obj.size());
+                        }
+                        else {
+                            powerer = new IntegerValue(curCol.obj.size());
+                            multiplier = new IntegerValue(curCol.obj.size());
+                        }
+                        powerer.set("2");
+                        multiplier.set(String.valueOf(df.size()));
+                        for (int j = 1; j < curCol.obj.size(); j++) {
+                            tmpVal = tmpVal.add(curCol.obj.get(j).sub(meanDF.getItem(k).get(i)).pow(powerer));
+                        }
+                        tmpVal = tmpVal.div(multiplier);
+                        itemToAdd.add(tmpVal);
+                    }
+                    i++;
+                }
+                k++;
+                returnable.add(itemToAdd);
+            }
+
+
+            return returnable;
         }
 
         @Override
@@ -212,12 +329,6 @@ public class DataFrame{
 
     public ArrayList<Column> table = new ArrayList<>(0);
     public ArrayList<Class<? extends Value>> types = new ArrayList<>();
-
-    private int iterator = 0;
-
-//    public ArrayList<Class<? extends Value>> getTypes(){
-//        return types;
-//    }
 
     public DataFrame(){
 
@@ -259,8 +370,9 @@ public class DataFrame{
         }
 
         int i = 0;
-        while ((strLine = br.readLine()) != null)   {
-            strLine = br.readLine();
+
+        strLine = br.readLine();
+        while ((strLine) != null)   {
             String[] currentItem = strLine.split("[,]");
             for(int j = 0; j<currentItem.length; j++) {
 
@@ -268,6 +380,8 @@ public class DataFrame{
                 table.get(j).obj.get(i).set(currentItem[j]);
             }
             i++;
+
+            strLine = br.readLine();
         }
 
         br.close();
