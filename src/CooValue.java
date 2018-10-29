@@ -6,6 +6,16 @@ public class CooValue extends Value{
     public int id;
     public Value val;
 
+    @Override
+    public void set(String other) {
+
+    }
+
+    @Override
+    public Object get() {
+        return id;
+    }
+
     public CooValue(int idToBe, Value valToBe) {
         id = idToBe;
         val = valToBe;

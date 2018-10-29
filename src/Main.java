@@ -1,5 +1,6 @@
 import java.io.*;
 import java.util.ArrayList;
+import java.util.LinkedList;
 
 public class Main {
 
@@ -88,10 +89,22 @@ public class Main {
         nowarama.add(item3);
         nowarama.add(item2);
 
-        nowarama.print();
-        String[] sort = { "wartosc","id",};
-        DataFrame.DFGroup nowagrupa = nowarama.groupby(sort);
+//        nowarama.print();
+//        String[] sort = { "wartosc","id"};
+//        DataFrame.DFGroup nowagrupa = nowarama.groupby(sort);
+//        LinkedList<DataFrame> tmp = nowarama.toList(sort);
+//        for( DataFrame df : tmp) df.print();
 
+        String[] sort = {"id","date"};
+        ArrayList<Class<? extends Value>> typy2 = new ArrayList<>();
+        typy2.add(new StringValue("s").getClass());
+        typy2.add(new StringValue("1999-01-01").getClass());
+        typy2.add(new FloatValue(0.1).getClass());
+        typy2.add(new DoubleValue(1.0).getClass());
+        DataFrame groupbytest = new DataFrame("C:\\Users\\dwojt\\Documents\\Java\\groubymulti2.csv", typy2, true);
+        DataFrame.DFGroup nowagrupatest = groupbytest.groupby(sort);
+
+        for(DataFrame df : nowagrupatest.separatedDFs) df.print();
 
 
 

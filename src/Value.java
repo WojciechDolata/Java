@@ -4,6 +4,9 @@ public abstract class Value{
 
     }
 
+
+    public abstract void set(String other);
+    public abstract Object get();
     public abstract String toString();
     public abstract Value add(Value other);
     public abstract Value sub(Value other);

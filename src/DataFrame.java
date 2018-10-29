@@ -1,7 +1,9 @@
+import sun.awt.SunHints;
 import sun.awt.image.ImageWatched;
 
 import javax.xml.crypto.Data;
 import java.io.*;
+import java.lang.reflect.Array;
 import java.util.*;
 
 public class DataFrame{
@@ -9,9 +11,11 @@ public class DataFrame{
     public class DFGroup implements Groupby{
         DataFrame frame;
         String [] colToSort;
+        LinkedList<DataFrame> separatedDFs;
         DFGroup(String[] kolumny, ArrayList<Class<? extends Value>> typy, String[] colnames){
             colToSort = colnames;
             frame = new DataFrame(kolumny, typy);
+            //separatedDFs = frame.toList(colnames);
         }
         @Override
         public DataFrame max() {
@@ -90,39 +94,16 @@ public class DataFrame{
             noColumns++;
         }
 
+        int i = 0;
         while ((strLine = br.readLine()) != null)   {
             strLine = br.readLine();
             String[] currentItem = strLine.split("[,]");
             for(int j = 0; j<currentItem.length; j++) {
+
                 table.get(j).obj.add(Value.getInstance(table.get(j).type));
+                table.get(j).obj.get(i).set(currentItem[j]);
             }
-//            ArrayList<Value> tmpItem = new ArrayList<>();
-//            int i=0;
-//            for (Class<? extends Value> currentType : typy){
-//                //tmpItem.add(create());
-////                switch (currentType){
-////                    case "double":
-////                        tmpItem.add(Double.parseDouble(currentItem[i]));
-////                        break;
-////                    case "Double":
-////                        tmpItem.add(Double.parseDouble(currentItem[i]));
-////                        break;
-////                    case "Integer":
-////                        tmpItem.add(Integer.parseInt(currentItem[i]));
-////                        break;
-////                    case "int":
-////                        tmpItem.add(Integer.parseInt(currentItem[i]));
-////                        break;
-////                    case "String":
-////                        tmpItem.add(currentItem[i]);
-////                        break;
-////                    case "string":
-////                        tmpItem.add(currentItem[i]);
-////                        break;
-////                }
-//                i++;
-//            }
-//            this.add(tmpItem);
+            i++;
         }
 
         br.close();
@@ -286,6 +267,46 @@ public class DataFrame{
         return 0;
     }
 
+    public LinkedList<DataFrame> tolist(String[] colnames){
+
+        LinkedList<DataFrame> returnable = new LinkedList<>();
+        int[] colIds = new int[colnames.length];
+
+        for( int i = 0; i< colnames.length; i++){
+            colIds[i] = getColNumberInRow(colnames[i]);
+        }
+
+        boolean stillEquals = true;
+        DataFrame toAdd = new DataFrame(getColNames(), types);
+
+        for( int i =0; i<size()-1; i++){
+
+            stillEquals = true;
+
+            for(int colIterator = 0; colIterator<colnames.length; colIterator++){
+
+                if(!getItem(i).get(colIds[colIterator]).eq(getItem(i+1).get(colIds[colIterator]))){
+                    stillEquals = false;
+                }
+            }
+
+            toAdd.add(getItem(i));
+
+            if(!stillEquals) {
+                returnable.add(toAdd);
+                toAdd = new DataFrame(getColNames(),types);
+            }
+        }
+
+        if(stillEquals){
+            toAdd.add(getItem(size()-1));
+            returnable.add(toAdd);
+        }
+
+        return returnable;
+    }
+
+
     class SortingDataFrame implements Comparator<ArrayList<Value>>{
         private String[] parameters;
 
@@ -316,11 +337,15 @@ public class DataFrame{
     public DFGroup groupby(String[] colnames){
         DFGroup returnable = new DFGroup(getColNames(),types, colnames);
         ArrayList<ArrayList<Value>> ar = getArrayList();
+        //Arrays.sor
         Collections.sort(ar,new SortingDataFrame(colnames));
+
         for(ArrayList<Value> curItem : ar) {
             returnable.frame.add(curItem);
         }
         returnable.frame.print();
+        returnable.separatedDFs = returnable.frame.tolist(colnames);
+        //System.out.println(returnable.frame.);
         return returnable;
     }
 
