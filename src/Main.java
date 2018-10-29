@@ -95,7 +95,7 @@ public class Main {
 //        LinkedList<DataFrame> tmp = nowarama.toList(sort);
 //        for( DataFrame df : tmp) df.print();
 
-        String[] sort = {"id","date"};
+        String[] sort = {"id"};
         ArrayList<Class<? extends Value>> typy2 = new ArrayList<>();
         typy2.add(new StringValue("s").getClass());
         typy2.add(new StringValue("1999-01-01").getClass());
@@ -104,7 +104,10 @@ public class Main {
         DataFrame groupbytest = new DataFrame("C:\\Users\\dwojt\\Documents\\Java\\groubymulti2.csv", typy2, true);
         DataFrame.DFGroup nowagrupatest = groupbytest.groupby(sort);
 
-        for(DataFrame df : nowagrupatest.separatedDFs) df.print();
+        nowagrupatest.max().print();
+        nowagrupatest.min().print();
+        nowagrupatest.mean().print();//gdzies mi co 2. rekord zjada
+        //for(DataFrame df : nowagrupatest.separatedDFs) df.print();
 
 
 

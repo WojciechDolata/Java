@@ -91,7 +91,16 @@ public class StringValue extends Value {
 
     @Override
     public boolean gte(Value other) {
-        throw new ArithmeticException("Nie mozna przeprowadzac operacji matamatycznych na stringach");
+        if (other instanceof StringValue) {
+            String tmp = (String) other.getVal();
+            if(this.val.compareTo(tmp)>=0)
+                return true;
+            return false;
+        }
+        else {
+            throw new ArithmeticException("Wartosci maja niekompatybilne typy");
+        }
+        //throw new ArithmeticException("Nie mozna przeprowadzac operacji matamatycznych na stringach");
     }
 
     @Override
