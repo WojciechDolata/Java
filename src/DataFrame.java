@@ -36,7 +36,7 @@ public class DataFrame{
         }
 
         @Override
-        public DataFrame max() {
+        public DataFrame max() throws DataFrameException{
             ArrayList<Integer> colIds = new ArrayList<>();
             for( int i = 0; i< colToSort.length; i++){
                 colIds.add(getColNumberInRow(colToSort[i]));
@@ -51,6 +51,9 @@ public class DataFrame{
                         Value tmpMax = df.getItem(0).get(i);
                         //System.out.println();
                         for(int j = 1; j<df.size(); j++){
+                            if(!df.getItem(j).get(i).getClass().toString().equals(tmpMax.getClass().toString())){
+                                throw new DataFrameException(df.table.get(i).name,j);
+                            }
                             if(df.getItem(j).get(i).gte(tmpMax)){
                                 tmpMax = df.getItem(j).get(i);
                             }
@@ -68,7 +71,7 @@ public class DataFrame{
         }
 
         @Override
-        public DataFrame min() {
+        public DataFrame min() throws DataFrameException {
             ArrayList<Integer> colIds = new ArrayList<>();
             for( int i = 0; i< colToSort.length; i++){
                 colIds.add(getColNumberInRow(colToSort[i]));
@@ -83,6 +86,9 @@ public class DataFrame{
                         Value tmpMin = df.getItem(0).get(i);
                         //System.out.println();
                         for(int j = 1; j<df.size(); j++){
+                            if(!df.getItem(j).get(i).getClass().toString().equals(tmpMin.getClass().toString())){
+                                throw new DataFrameException(df.table.get(i).name,j);
+                            }
                             if(df.getItem(j).get(i).lte(tmpMin)){
                                 tmpMin = df.getItem(j).get(i);
                             }
@@ -121,7 +127,7 @@ public class DataFrame{
         }
 
         @Override
-        public DataFrame mean() {
+        public DataFrame mean() throws DataFrameException {
             LinkedList<DataFrame> tmpSeparatedDFs = removingSpareCols();
             DataFrame tmpFrame = frame.iloc(0,size()-1);
             ArrayList<Integer> colIds = new ArrayList<>();
@@ -139,6 +145,9 @@ public class DataFrame{
                     else {
                         Value tmpVal = curCol.obj.get(0);
                         for (int j = 1; j < curCol.obj.size(); j++) {
+                            if(tmpVal.getClass().toString().equals(curCol.obj.get(j).getClass().toString())){
+                                throw new DataFrameException(curCol.name, j);
+                            }
                             tmpVal = tmpVal.add(curCol.obj.get(j));
                         }
                         Value devisor = createValObj(curCol.type.getName());
@@ -153,7 +162,7 @@ public class DataFrame{
         }
 
         @Override
-        public DataFrame std() {
+        public DataFrame std() throws DataFrameException{
             DataFrame meanDF = this.mean();
             LinkedList<DataFrame> tmpSeparatedDFs = removingSpareCols();
             DataFrame tmpFrame = frame.iloc(0,size()-1);
@@ -179,6 +188,9 @@ public class DataFrame{
                         powerer.set("2");
                         multiplier.set(String.valueOf(df.size()));
                         for (int j = 1; j < curCol.obj.size(); j++) {
+                            if(tmpVal.getClass().toString().equals(curCol.obj.get(j).getClass().toString())){
+                                throw new DataFrameException(curCol.name, j);
+                            }
                             tmpVal = tmpVal.add(curCol.obj.get(j).sub(meanDF.getItem(k).get(i)).pow(powerer));
                         }
                         tmpVal = tmpVal.div(multiplier);
@@ -197,7 +209,7 @@ public class DataFrame{
         }
 
         @Override
-        public DataFrame sum() {
+        public DataFrame sum() throws DataFrameException{
             LinkedList<DataFrame> tmpSeparatedDFs = new LinkedList<>();
             for(DataFrame df : separatedDFs) tmpSeparatedDFs.add(df.iloc(0,df.size()-1));
             DataFrame tmpFrame = frame.iloc(0,size()-1);
@@ -227,6 +239,9 @@ public class DataFrame{
                     else {
                         Value tmpVal = curCol.obj.get(0);
                         for (int j = 1; j < curCol.obj.size(); j++) {
+                            if(tmpVal.getClass().toString().equals(curCol.obj.get(j).getClass().toString())){
+                                throw new DataFrameException(curCol.name, j);
+                            }
                             tmpVal = tmpVal.add(curCol.obj.get(j));
                         }
 
@@ -243,7 +258,7 @@ public class DataFrame{
         }
 
         @Override
-        public DataFrame var() {
+        public DataFrame var() throws DataFrameException {
             DataFrame meanDF = this.mean();
             LinkedList<DataFrame> tmpSeparatedDFs = removingSpareCols();
             DataFrame tmpFrame = frame.iloc(0,size()-1);
@@ -269,6 +284,9 @@ public class DataFrame{
                         powerer.set("2");
                         multiplier.set(String.valueOf(df.size()));
                         for (int j = 1; j < curCol.obj.size(); j++) {
+                            if(tmpVal.getClass().toString().equals(curCol.obj.get(j).getClass().toString())){
+                                throw new DataFrameException(curCol.name, j);
+                            }
                             tmpVal = tmpVal.add(curCol.obj.get(j).sub(meanDF.getItem(k).get(i)).pow(powerer));
                         }
                         tmpVal = tmpVal.div(multiplier);

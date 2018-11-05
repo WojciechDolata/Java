@@ -55,7 +55,7 @@ public class Main {
         return a;
     }
 
-    public static void main (String[] args) throws IOException {
+    public static void main (String[] args) throws Exception {
 
         IntegerValue id = new IntegerValue(1);
         IntegerValue id1 = new IntegerValue(2);
@@ -112,6 +112,24 @@ public class Main {
         nowagrupatest.var().print();
         nowagrupatest.sum().print();
 
+        IntegerValue a = new IntegerValue(10);
+        FloatValue c = new FloatValue(1.0);
+        Column b = new Column("nowa", a.getClass());
+        b.obj.add(a);
+
+        System.out.println(b.obj.get(0));
+        b=b.add(a);
+        b=b.mul(a);
+       //b=b.sub(c);
+        System.out.println(b.obj.get(0));
+
+        Column kol = b.clone();
+        kol = kol.mul(b);
+        //kol.obj.add(a);
+        kol = kol.div(kol);
+        System.out.println(kol.obj.get(0));
+        kol = kol.add(kol);
+        System.out.println(kol.obj.get(0));
 //        nowagrupatest.frame.print();
 
 
