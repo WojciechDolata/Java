@@ -22,6 +22,17 @@ public class DoubleValue extends Value {
     }
 
     @Override
+    public Object get() {
+        return val;
+    }
+
+    @Override
+    public void set(String other) {
+        DoubleValue tmp = new DoubleValue(other);
+        this.val = tmp.val;
+    }
+
+    @Override
     public String toString() {
         return val.toString();
     }

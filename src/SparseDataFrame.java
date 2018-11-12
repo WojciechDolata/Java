@@ -18,27 +18,27 @@ public class SparseDataFrame extends DataFrame{
     }
     private int objectIterator = 0;
     public ArrayList<SparseColumn> table = new ArrayList<>();
-    private Object elementToHide = new Object();
+    private Value elementToHide;
 
-    public SparseDataFrame(String[] columns, String[] dataTypes, String hide) {
+    public SparseDataFrame(String[] columns, ArrayList<Class<? extends Value>> dataTypes, Value hide) {
         elementToHide = hide;
-        if(hide.contains(".")) {
-            elementToHide = Double.parseDouble(hide);
-        }
-        else if(isNumeric(hide)){
-            elementToHide = Integer.parseInt(hide);
-        }
-        else{
-            elementToHide = hide;
-        }
+//        if(hide.contains(".")) {
+//            elementToHide = Double.parseDouble(hide);
+//        }
+//        else if(isNumeric(hide)){
+//            elementToHide = Integer.parseInt(hide);
+//        }
+//        else{
+//            elementToHide = hide;
+//        }
         for(int i=0; i<columns.length; i++) {
-            table.add(new SparseColumn(columns[i], dataTypes[i], elementToHide));
+            table.add(new SparseColumn(columns[i], dataTypes.get(i), elementToHide));
         }
 
     }
-    public void add(ArrayList<Object> item){
+    public void add(ArrayList<Value> item){
         int k=0;
-        for(Object currentObj : item) {
+        for(Value currentObj : item) {
             System.out.println(currentObj + " " +elementToHide);
             if(currentObj!=elementToHide) {
                 table.get(k).obj.add(new CooValue(objectIterator, currentObj));
@@ -63,27 +63,27 @@ public class SparseDataFrame extends DataFrame{
             numCol++;
         }
         String[] columns = new String[numCol];
-        String[] dataTypes = new String[numCol];
+        ArrayList<Class<? extends Value>> dataTypes = new ArrayList<Class<? extends Value>>(numCol);
         int k=0;
         for(Column currentCol : unconvertedFrame.table){
             columns[k] = currentCol.name;
-            dataTypes[k] = currentCol.type;
+            dataTypes.add(currentCol.type);
             k++;
         }
         k=0;
-        String hide = "0"; // to mozna brac z mostCommon z dataFrame
-        elementToHide = hide;
-        if(hide.contains(".")) {
-            elementToHide = Double.parseDouble(hide);
-        }
-        else if(isNumeric(hide)){
-            elementToHide = Integer.parseInt(hide);
-        }
-        else{
-            elementToHide = hide;
-        }
+        //Value hide = "0"; // to mozna brac z mostCommon z dataFrame
+       // elementToHide = hide;
+//        if(hide.contains(".")) {
+//            elementToHide = Double.parseDouble(hide);
+//        }
+//        else if(isNumeric(hide)){
+//            elementToHide = Integer.parseInt(hide);
+//        }
+//        else{
+//            elementToHide = hide;
+//        }
         for(int i=0; i<columns.length; i++) {
-            table.add(new SparseColumn(columns[i], dataTypes[i], hide));
+            table.add(new SparseColumn(columns[i], dataTypes.get(i), elementToHide));
         }
 
         for(int i=0; i<unconvertedFrame.size(); i++){
@@ -91,8 +91,8 @@ public class SparseDataFrame extends DataFrame{
         }
     }
 
-    public ArrayList<Object> getItem(int id) {
-        ArrayList<Object> returnable = new ArrayList<>();
+    public ArrayList<Value> getItem(int id) {
+        ArrayList<Value> returnable = new ArrayList<>();
         for(SparseColumn currentCol : this.table){
             returnable.add(currentCol.copyItemId(id));
         }
@@ -105,11 +105,11 @@ public class SparseDataFrame extends DataFrame{
         for(SparseColumn currentCol : this.table)
             i++;
         String[] columns = new String[i];
-        String[] dataTypes = new String[i];
+        ArrayList<Class<? extends Value>> dataTypes = new  ArrayList<Class<? extends Value>>(i);
         int k=0;
         for(SparseColumn currentCol : this.table) {
             columns[k] = currentCol.name;
-            dataTypes[k] = currentCol.type;
+            dataTypes.add(currentCol.type);
             k++;
         }
         DataFrame returnable = new DataFrame(columns,dataTypes);

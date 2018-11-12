@@ -20,6 +20,17 @@ public class FloatValue extends Value {
     }
 
     @Override
+    public Object get() {
+        return val;
+    }
+
+    @Override
+    public void set(String other) {
+        FloatValue tmp = new FloatValue(other);
+        this.val = tmp.val;
+    }
+
+    @Override
     public String toString() {
         return val.toString();
     }

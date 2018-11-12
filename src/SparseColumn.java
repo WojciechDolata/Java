@@ -5,11 +5,11 @@ import java.util.concurrent.Callable;
 public class SparseColumn {
 
     public String name;
-    public String type;
-    public Object toHide;
+    public Class<? extends Value> type;
+    public Value toHide;
     public ArrayList<CooValue> obj;
 
-    public Object copyItemId(int id){
+    public Value copyItemId(int id){
         for(CooValue currentVal : obj){
             if(currentVal.id == id)
                 return currentVal.val;
@@ -17,7 +17,7 @@ public class SparseColumn {
         return toHide;
     }
 
-    public SparseColumn(String nameToBe, String dataType, Object hide) {
+    public SparseColumn(String nameToBe, Class<? extends Value> dataType, Value hide) {
         this.name = nameToBe;
         this.type = dataType;
         obj = new ArrayList<CooValue>();

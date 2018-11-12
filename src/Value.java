@@ -4,6 +4,9 @@ public abstract class Value{
 
     }
 
+
+    public abstract void set(String other);
+    public abstract Object get();
     public abstract String toString();
     public abstract Value add(Value other);
     public abstract Value sub(Value other);
@@ -18,5 +21,20 @@ public abstract class Value{
     public abstract int hashCode();
     public abstract Value create(String s);
     public abstract Object getVal();
-    
+    public static Value getInstance(Class c){
+        switch (c.getName()){
+            case "IntegerValue":
+                return new IntegerValue();
+            case "DoubleValue":
+                return new DoubleValue();
+            case "StringValue":
+                return new StringValue();
+            case "FloatValue":
+                return new FloatValue(0);
+            case "DateTimeValue":
+                return new DateTimeValue("0-0-0","0:0");
+            default:
+                return null;
+        }
+    }
 }

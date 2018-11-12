@@ -11,6 +11,7 @@ public class DateTimeValue extends Value {
         String[] tmpDate = dateToBe.split("-");
         val = new GregorianCalendar(Integer.parseInt(tmpDate[0]),
                 Integer.parseInt(tmpDate[1]),Integer.parseInt(tmpDate[2]));
+        //System.out.println(val);
 
     }
 
@@ -27,6 +28,16 @@ public class DateTimeValue extends Value {
         val = other;
     }
 
+    @Override
+    public Object get() {
+        return val;
+    }
+
+    @Override
+    public void set(String other) {
+        DateTimeValue tmp = new DateTimeValue(other);
+        this.val = tmp.val;
+    }
 
     @Override
     public String toString() {

@@ -17,6 +17,17 @@ public class IntegerValue extends Value{
     }
 
     @Override
+    public Object get() {
+        return val;
+    }
+
+    @Override
+    public void set(String other) {
+        IntegerValue tmp = new IntegerValue(other);
+        this.val = tmp.val;
+    }
+
+    @Override
     public Value create(String other) {
         return new IntegerValue(other);
     }

@@ -22,6 +22,16 @@ public class StringValue extends Value {
 
 
     @Override
+    public Object get() {
+        return val;
+    }
+
+    @Override
+    public void set(String other) {
+        this.val = other;
+    }
+
+    @Override
     public String toString() {
         return val;
     }
@@ -68,12 +78,29 @@ public class StringValue extends Value {
 
     @Override
     public boolean lte(Value other) {
-        throw new ArithmeticException("Nie mozna przeprowadzac operacji matamatycznych na stringach");
+        if (other instanceof StringValue) {
+            String tmp = (String) other.getVal();
+            if(this.val.compareTo(tmp)<=0)
+                return true;
+            return false;
+        }
+        else {
+            throw new ArithmeticException("Wartosci maja niekompatybilne typy");
+        }
     }
 
     @Override
     public boolean gte(Value other) {
-        throw new ArithmeticException("Nie mozna przeprowadzac operacji matamatycznych na stringach");
+        if (other instanceof StringValue) {
+            String tmp = (String) other.getVal();
+            if(this.val.compareTo(tmp)>=0)
+                return true;
+            return false;
+        }
+        else {
+            throw new ArithmeticException("Wartosci maja niekompatybilne typy");
+        }
+        //throw new ArithmeticException("Nie mozna przeprowadzac operacji matamatycznych na stringach");
     }
 
     @Override
